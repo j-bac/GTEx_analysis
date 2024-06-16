@@ -46,6 +46,8 @@ def load_rnaseq_sample_selected_tissues_anndata(
     adata.var_names = cols
     adata.var = cols_metadata
     adata.obs_names = rows["Name"].values
-    adata.obs["Description"] = rows["Description"].values
+    if "Description" in rows.columns:
+        adata.obs["Description"] = rows["Description"].values
     adata = adata.T.copy()
+    adata.X = adata.X.tocsr()
     return adata
