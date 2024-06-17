@@ -23,13 +23,17 @@ expr_set <- Biobase::ExpressionSet(
 # process with yarn qsmooth
 # yarn::checkMisAnnotation(expr_set,"GENDER",controlGenes="Y",legendPosition="topleft")
 # yarn::checkTissuesToMerge(expr_set,"SMTS","SMTSD")
-expr_set_filtered <- yarn::filterLowGenes(expr_set,"SMTSD")
-expr_set_filtered_norm <- yarn::normalizeTissueAware(expr_set_filtered,"SMTSD")
+expr_set_filtered <- yarn::filterLowGenes(expr_set,"SMTSD_grouped")
+expr_set_filtered_qsmooth <- yarn::normalizeTissueAware(expr_set_filtered,"SMTSD_grouped", normalizationMethod='qsmooth')
+qs <- qsmooth(expr_set_filtered,"SMTSD_grouped")
+expr_set_filtered_qsmooth_data <- qsmoothData(qs) # extract smoothed quantile normalized data
+expr_set_filtered_qsmooth_weights qsmoothWeights(qs) # extract smoothed quantile normalized weights
+expr_set_filtered_quantile <- yarn::normalizeTissueAware(expr_set_filtered,"SMTSD_grouped", normalizationMethod='quantile')
 # qs_norm_e1 <- qsmooth(object = expr_set_filtered@assayData$exprs, group_factor = expr_set$SMTSD)
 
 
 # save to MM (just to keep single format - matrix is now quite dense)
-rnaseq_sample_selected_tissues_yarn_normalized_sparse <- as( expr_set_filtered_norm@assayData$normalizedMatrix, "sparseMatrix")
-writeMM(rnaseq_sample_selected_tissues_yarn_normalized_sparse, "results/rnaseq_sample_selected_tissues_yarn_normalized.mm")
-write.csv(data.frame(Name = rownames(expr_set_filtered)), "results/rnaseq_sample_selected_tissues_yarn_normalized_genes_rows.csv", quote=FALSE)
-write.csv(data.frame('0' =  colnames(expr_set_filtered)), "results/rnaseq_sample_selected_tissues_yarn_normalized_samples_columns.csv", quote=FALSE)
+rnaseq_sample_selected_tissues_qsmooth_sparse <- as( expr_set_filtered_qsmooth@assayData$normalizedMatrix, "sparseMatrix")
+writeMM(rnaseq_sample_selected_tissues_yarn_normalized_sparse, "results/rnaseq_sample_selected_tissues_qsmooth.mm")
+write.csv(data.frame(Name = rownames(expr_set_filtered)), "results/rnaseq_sample_selected_tissues_qsmooth_genes_rows.csv", quote=FALSE)
+write.csv(data.frame('0' =  colnames(expr_set_filtered)), "results/rnaseq_sample_selected_tissues_qsmooth_samples_columns.csv", quote=FALSE)
