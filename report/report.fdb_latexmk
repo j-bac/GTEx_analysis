@@ -1,19 +1,22 @@
 # Fdb version 3
-["bibtex report"] 1718820492 "report.aux" "report.bbl" "report" 1718820499
+["bibtex report"] 1718823110 "report.aux" "report.bbl" "report" 1718823128
   "c:/texlive/2021/texmf-dist/bibtex/bst/natbib/plainnat.bst" 1644002196 26816 ffe5423d2019860bad9f54bc402fac15 ""
   "references.bib" 1718814528 30630 39cdc240d1e8b80909530d1622578952 ""
-  "report.aux" 1718820498 8613 41427daf41acb36de167f2ba9d08fa4f "pdflatex"
+  "report.aux" 1718823126 9559 03da9e9f505d655f0c7291bd12591f5b "pdflatex"
   (generated)
   "report.bbl"
   "report.blg"
-["pdflatex"] 1718820493 "c:/Users/jobac/Desktop/all/git/GTEx_analysis/report/report.tex" "report.pdf" "report" 1718820499
+["pdflatex"] 1718823115 "c:/Users/jobac/Desktop/all/git/GTEx_analysis/report/report.tex" "report.pdf" "report" 1718823128
   "../figures/0_Heart_Atrial_Appendage_QC.png" 1718787767 111105 2765d397e1dd65a23ab2008900f6c71f ""
   "../figures/0_Heart_Left_Ventricle_QC.png" 1718787776 115288 6963f9eca10ee121e7503e783cc16b27 ""
   "../figures/0_Kidney_QC.png" 1718787782 105380 26016c32f559a4653f991f9a7ba23440 ""
   "../figures/0_Liver_QC.png" 1718787780 108713 3ad850efa06540e48b6c46c7f9f2be60 ""
+  "../figures/0_number_of_samples_barplot.png" 1718786533 168098 d0338bfddc67d37834b5ea0eb9633337 ""
+  "../figures/0_number_of_samples_barplot_passing_QC.png" 1718821296 162885 1c2f0a5b99c87cec1d87dbc29ce0d004 ""
   "../figures/0_tissues_outliers.png" 1718787783 143038 8445ab88779145f1392bdc7e8f2cd9ad ""
-  "../figures/1_TF_activities_network.png" 1718820035 158956 282f4a0ba18a952e3a155425af69214c ""
-  "../figures/1_TF_activities_top20_bar.png" 1718820034 27257 deb4e4ff99222ad06abb5fc70ab83de6 ""
+  "../figures/1_TF_activities_network.png" 1718820613 158956 282f4a0ba18a952e3a155425af69214c ""
+  "../figures/1_TF_activities_top20_bar.png" 1718820611 27257 deb4e4ff99222ad06abb5fc70ab83de6 ""
+  "../figures/1_count_donor_ids.png" 1718820755 15456 eb881cf320b9f627af22abfdcd255437 ""
   "../figures/1_msigdb_HALLMARK_top20.png" 1718820168 62101 4c07cead52dc834e93f86b7dfa1d44e6 ""
   "../figures/1_top_pathway_TF_activities_network.png" 1718820186 158956 282f4a0ba18a952e3a155425af69214c ""
   "../figures/1_top_pathway_TF_activities_top20_bar.png" 1718820180 27201 6b7243e8fca20e8e48ae8fb42d089da5 ""
@@ -22,8 +25,9 @@
   "../figures/pcaqsmooth_PCA_contaminating_genes.png" 1718808965 533692 5291004ec8b3376ad05c6a5894489909 ""
   "../figures/pcaqsmooth_PCA_covariates.png" 1718808962 351821 f8576271aad280158d2a63f9952f9866 ""
   "../figures/scattertissues_total_counts_vs_pct_counts_mt.png" 1718787765 227344 1494214e3fcb6cb1d11fb7f30216f4ad ""
+  "../figures/violintissues_pct_counts_mt.png" 1718787764 222716 73abc519fa3debbd0d3d927c393b1061 ""
   "../figures/volcano_liver_DE_genes.png" 1718816465 268355 e54a2c9c9228fddda37af4f8fc24aacd ""
-  "c:/Users/jobac/Desktop/all/git/GTEx_analysis/report/report.tex" 1718820484 18185 99995c37df4265b1e68e87bb254bec1e ""
+  "c:/Users/jobac/Desktop/all/git/GTEx_analysis/report/report.tex" 1718823094 19717 46173a7903c6374bb8f91dc12e7951e3 ""
   "c:/texlive/2021/texmf-dist/fonts/enc/dvips/cm-super/cm-super-ts1.enc" 1643999288 2900 1537cc8184ad1792082cd229ecc269f4 ""
   "c:/texlive/2021/texmf-dist/fonts/map/fontname/texfonts.map" 1644000325 3524 cb3e574dea2d1052e39280babc910dc8 ""
   "c:/texlive/2021/texmf-dist/fonts/tfm/jknappen/ec/tcrm1000.tfm" 1643999944 1536 e07581a4bb3136ece9eeb4c3ffab8233 ""
@@ -73,10 +77,10 @@
   "c:/texlive/2021/texmf-var/fonts/map/pdftex/updmap/pdftex.map" 1644005016 4417058 012efeece5643eb264ff9012eacdec30 ""
   "c:/texlive/2021/texmf-var/web2c/pdftex/pdflatex.fmt" 1644005113 2796745 0fe0945d7143edf1ead8b40c70d50037 ""
   "c:/texlive/2021/texmf.cnf" 1644004991 713 614551405fc44b98efbf516466e3c909 ""
-  "report.aux" 1718820498 8613 41427daf41acb36de167f2ba9d08fa4f "pdflatex"
-  "report.bbl" 1718820493 5799 b1014bfe0c684d9f235e27b3a40b880d "bibtex report"
-  "report.tex" 1718820484 18185 99995c37df4265b1e68e87bb254bec1e ""
-  "report.toc" 1718820498 1613 96618e9d6bb476847f265790088c771e "pdflatex"
+  "report.aux" 1718823126 9559 03da9e9f505d655f0c7291bd12591f5b "pdflatex"
+  "report.bbl" 1718823115 5799 b1014bfe0c684d9f235e27b3a40b880d "bibtex report"
+  "report.tex" 1718823094 19717 46173a7903c6374bb8f91dc12e7951e3 ""
+  "report.toc" 1718823126 1668 7aa105d56313f596bfe6bf82e23a6f9b "pdflatex"
   (generated)
   "report.aux"
   "report.log"

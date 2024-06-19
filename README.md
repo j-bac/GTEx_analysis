@@ -7,13 +7,10 @@ Then create the conda environment with:
 conda env create -f gtex.yml
 ```
 
-The entire analysis is then reproduced by running scripts in the `analysis` folder:
+The analysis is then reproduced by running two notebooks and one script in the `analysis` folder. If preferred, notebooks can be executed as scripts using nbconvert. The full pipeline is then performed by:
 ```bash
 conda activate gtex
-python 0_load_data_subset.py
+jupyter nbconvert --execute 0_load_data_subset.ipynb
 Rscript 1_yarn_normalize.R
-python 2_specificity_analysis.py
+jupyter nbconvert --execute 2_specificity_analysis.ipynb
 ```
-
-Given the simplicity of the pipeline we don't use tools such as snakemake here.
-

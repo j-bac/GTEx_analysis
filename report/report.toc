@@ -11,9 +11,10 @@
 \contentsline {subsection}{\numberline {4.3}GSEA and TF activity inference}{13}{}%
 \contentsline {subsection}{\numberline {4.4}Data availability statement}{13}{}%
 \contentsline {section}{\numberline {5}Supplementary figures}{13}{}%
-\contentsline {subsubsection}{\numberline {5.0.1}Global QC metrics}{13}{}%
-\contentsline {subsubsection}{\numberline {5.0.2}Scatter plots used to merge sub-tissues or not}{14}{}%
-\contentsline {subsubsection}{\numberline {5.0.3}Samples excluded by tissue-specific QC metrics}{14}{}%
-\contentsline {subsubsection}{\numberline {5.0.4}Examples of tissue-specific QC metrics (for all organs go in figures folder)}{15}{}%
-\contentsline {subsubsection}{\numberline {5.0.5}Examples of contaminating genes}{20}{}%
-\contentsline {subsubsection}{\numberline {5.0.6}PCA of smooth qunatile normalized data}{20}{}%
+\contentsline {subsection}{\numberline {5.1}Distribution of samples retained}{13}{}%
+\contentsline {subsection}{\numberline {5.2}Global QC metrics}{15}{}%
+\contentsline {subsection}{\numberline {5.3}Scatter plots used to merge sub-tissues or not}{15}{}%
+\contentsline {subsection}{\numberline {5.4}Samples excluded by tissue-specific QC metrics}{17}{}%
+\contentsline {subsection}{\numberline {5.5}Examples of tissue-specific QC metrics (for all organs go in figures folder)}{17}{}%
+\contentsline {subsection}{\numberline {5.6}Examples of contaminating genes}{22}{}%
+\contentsline {subsection}{\numberline {5.7}PCA of smooth qunatile normalized data}{22}{}%

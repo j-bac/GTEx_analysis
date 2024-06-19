@@ -10,6 +10,8 @@ def get_protein_coding_genes(
     save_path="../results/protein_coding_genes.txt",
     overwrite=False,
 ):
+    """ Get protein coding genes using gencode annotation. """
+    
     if pathlib.Path(save_path).is_file() and not overwrite:
         print("File already exists and overwrite is False")
     else:
@@ -36,14 +38,20 @@ def load_rnaseq_sample_selected_tissues_anndata(
     genes_names_path="../results/0_rnaseq_sample_selected_tissues_genes_rows.csv",
     samples_metadata_path="../results/0_rnaseq_sample_selected_tissues_QC_metadata.csv",
 ):
+    """ Load filtered data subset """
+
+    # read
     X = pd.read_parquet(X_path)
     rows = pd.read_csv(genes_rows_path)
-    cols = X.columns  # pd.read_csv(samples_columns_path, index_col=0)["0"].values
+    cols = X.columns  
     cols_metadata = pd.read_csv(samples_metadata_path, index_col=0)
 
     genes_names = pd.read_csv(genes_names_path)
+
+    # make sure metadata corresponds to columns
     assert all(cols == cols_metadata.index)
 
+    # return anndata
     adata = sc.AnnData(X)
     adata.var_names = cols
     adata.var = cols_metadata
@@ -56,6 +64,15 @@ def load_rnaseq_sample_selected_tissues_anndata(
 
 
 def is_outlier(adata, metric: str, nmads: int, positive_only=False):
+    """ check for outliers based on median absolute deviation 
+    
+    Parameters
+    ----------
+        adata: AnnData
+        metric: str, column with QC metric values in adata.obs
+        nmads: int, define threshold based on nmads times the absolute deviation (below and above the median)
+        positive_only: bool; only perform positive thresholding 
+    """
     M = adata.obs[metric]
     threshold = nmads * scipy.stats.median_abs_deviation(M)
     if positive_only:

@@ -6,7 +6,7 @@ load_rnaseq_sample_selected_tissues <- function(
   X_path = "results/0_rnaseq_sample_selected_tissues_QC.parquet",
   samples_metadata_path = "results/0_rnaseq_sample_selected_tissues_QC_metadata.csv"
 ) {
-  # Load the sparse matrix
+  # Load the matrix
   X <- read_parquet(X_path)
 
   # assign rownames

@@ -54,7 +54,7 @@ For step 3, we first rely on the GTEx-provided RNA Integrity Number to flag samp
   \item Percent of counts coming from the 20 most expressed genes
 \end{itemize}
 
-Importantly, we can compute such metrics tissue by tissue rather than across tissues. This is important since distributions can vary between tissues, e.g., we find that heart samples have a much higher percent of counts from mitochondrial genes.
+Importantly, we can compute such metrics tissue by tissue rather than across tissues. This is important since distributions can vary between tissues, e.g., we find that heart samples have a much higher percent of counts from mitochondrial genes (\ref{fig:violintissues_pct_counts_mt}).
 
 For step 4, we rely on the simple tissue-specific filtering procedure as defined and recommended by (\cite{Paulson2017-jv}). “Tissue-agnostic” filtering removes genes with less than one count per million (CPM) in half of all samples. “Tissue-aware” filtering removes genes with less than one CPM in fewer than half of the number of samples of the smallest tissue.
 
@@ -69,7 +69,7 @@ For step 5, we rely once again on a simple grouping procedure by (\cite{Paulson2
 
 For step 6, the normalization strategy will depend on the downstream gene set identification approach.
 \begin{itemize}
-  \item Using a “within sample” approach, clusters of genes and pathway activity are first defined separately for each sample, e.g., using single sample GSEA (ssGSEA) or WGCNA. For such within-sample analysis, TPM values are suitable. WGCNA was for example used in the GTEx pilot study (\cite{GTEx-Consortium2015-te}).
+  \item Using a “within sample” approach, clusters of genes and pathway activity are first defined separately for each sample, e.g., using WGCNA. For such within-sample analysis, TPM values are suitable. WGCNA was for example the approach used in the GTEx pilot study to construct coexpression networks and extract gene modules for each tissue. The  modules are then used to identify active pathways across tissues (\cite{GTEx-Consortium2015-te}).
   \item Using a “between samples” approach, where samples' expression values are directly compared against one another using specificity metrics or differential expression. TPM values can't be used for such comparisons. Moreover, assumptions of usual normalization approaches might not hold (\cite{Paulson2017-jv}). For example, that:
   \begin{itemize}
     \item Most genes are not differentially expressed
@@ -80,13 +80,13 @@ For step 6, the normalization strategy will depend on the downstream gene set id
 
 Rather than simple quantile normalization, smooth quantile normalization methods (e.g., qsmooth, SNAIL (\cite{Hicks2018-gi,Hsieh2023-jf})) have been developed to better compare different tissues from GTEx. They assume that the statistical distribution of each sample should be similar within a biological group, instead of globally across biological groups. The authors show this allows for better preservation of biologically known tissue-specific expression.
 
-In our analysis, we choose to rely on smooth quantile normalization to enable direct comparisons across tissues.
+
+In our analysis, we choose to rely on smooth quantile normalization to enable direct comparisons across tissues and will not compare results with a within sample approache due to time constraints.
 
 \subsection{Definition of Tissue “Specificity” and Prior Expectations}
 
-After quality control and normalization, the next question is to quantitatively define tissue “specificity”:
+After quality control and normalization, the next question is to quantitatively define tissue “specificity”, which could be interpreted as:
 \begin{itemize}
-  \item "Specificity" could be interpreted as:
   \item Strict presence or absence compared to other tissues (similar conceptually to the task of identifying "marker genes" (\cite{Pullin2024-xv})). Clearly, this second definition is not realistic to apply given expectations from prior literature (\cite{Aguet2016-qm}):
   \begin{quote}
     “Since most protein-coding genes appear to be expressed ubiquitously, tissue specificity is driven by the concerted, differential expression of multiple genes, or networks of genes, as part of specific cellular programs, and not the tissue-specific expression of a few select genes. [...] In general, gene expression varies far more across tissues than across individuals”
@@ -108,11 +108,12 @@ Finally, we define transcriptional regulators based on CollecTRI (\cite{Muller-D
 
 Starting with raw counts from the GTEx website, we retained protein-coding genes and heart, kidney, liver, lung, muscle, pancreas, spleen, stomach, pituitary gland, and thyroid samples.
 
-Subtissues were grouped for kidney and considered separately for heart based on scatterplot visualization as described in (\cite{Paulson2017-jv}) (see figures below). Kidney Medulla sub-tissue was excluded by RNA integrity number quality control anyway, thus the decision to merge ended up having no impact.
+Subtissues were grouped for kidney and considered separately for heart based on scatterplot visualization as described in (\cite{Paulson2017-jv}) (\ref{fig:kidney_merging}, \ref{fig:heart_merging}). Kidney Medulla sub-tissue was excluded by RNA integrity number quality control anyway, thus the decision to merge ended up having no impact.
 
-Samples that passed both RNA integrity quality control and tissue-specific quality control were smooth quantile normalized (see Supplementary figures).
+Samples that passed both RNA integrity quality control and tissue-specific quality control were smooth quantile normalized (\ref{fig:0_number_of_samples_barplot_passing_QC}).
 
-Differentially expressed genes were defined based on a Wilcoxon and the default scanpy procedure, which uses a one vs rest approach (i.e., test liver vs all other tissues rather than pairwise testing of tissue). 
+
+Differentially expressed genes were defined based on a Wilcoxon and the default scanpy procedure, which uses a one vs rest approach (i.e., test liver vs all other tissues rather than pairwise testing of tissue) (\ref{fig:volcano_liver_DE_genes}). 
 
 \begin{figure}[htbp]
   \centering
@@ -122,7 +123,7 @@ Differentially expressed genes were defined based on a Wilcoxon and the default 
 \end{figure}
 \FloatBarrier
 
-Wilcoxon test scores were given as input to decoupleR's univariate linear model (\cite{Badia-I-Mompel2022-wj}) to predict transcription factor activities and p-values based on prior knowledge of the transcription factor (TF) to target network from collecTRI (\cite{Muller-Dott2023-ve}).
+Wilcoxon test scores were given as input to decoupleR's univariate linear model (\cite{Badia-I-Mompel2022-wj}) to predict transcription factor activities and p-values based on prior knowledge of the transcription factor (TF) to target network from collecTRI (\cite{Muller-Dott2023-ve}) (\ref{fig:1_TF_activities_top20_bar},\ref{fig:1_TF_activities_top20_bar}).
 
 \begin{figure}[htbp]
   \centering
@@ -139,7 +140,7 @@ Wilcoxon test scores were given as input to decoupleR's univariate linear model 
 \end{figure}
 \FloatBarrier
 
-Wilcoxon test scores were also given as input for gene set enrichment analysis (GSEA) of terms in the MSigDB HALLMARK collection. Finally, to obtain TFs specific to a pathway, we simply use previously computed significant TF activities, subsetting to significant TFs connected to leading genes reported by GSEA for that pathway. For Xenobiotic metabolism (top GSEA pathway), this yielded largely unchanged results compared to previously identified non-pathway-specific significant TFs. 
+Wilcoxon test scores were also given as input for gene set enrichment analysis (GSEA) of terms in the MSigDB HALLMARK collection (\ref{fig:1_msigdb_HALLMARK_top20}). Finally, to obtain TFs specific to a pathway, we simply use previously computed significant TF activities, subsetting to significant TFs connected to leading genes reported by GSEA for that pathway. For Xenobiotic metabolism (top GSEA pathway), this yielded largely unchanged results compared to previously identified non-pathway-specific significant TFs (\ref{fig:1_top_pathway_TF_activities_top20_bar},\ref{fig:1_top_pathway_TF_activities_network}). 
 
 \begin{figure}[htbp]
   \centering
@@ -210,8 +211,39 @@ Data can be obtained by download of files from the provided GTEx website URL as 
 
 \section{Supplementary figures}
 
+\subsection{Distribution of samples retained}
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=.75\textwidth]{../figures/1_count_donor_ids.png}
+  \caption{Count of donor IDs}
+  \label{fig:1_count_donor_ids}
+\end{figure}
+
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=.75\textwidth]{../figures/0_number_of_samples_barplot.png}
+  \caption{Number of samples per tissu before QC}
+  \label{fig:0_number_of_samples_barplot}
+\end{figure}
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=.75\textwidth]{../figures/0_number_of_samples_barplot_passing_QC.png}
+  \caption{Number of samples per tissue after QC filtering}
+  \label{fig:0_number_of_samples_barplot_passing_QC}
+\end{figure}
+
+
 \FloatBarrier
-\subsubsection{Global QC metrics}
+\subsection{Global QC metrics}
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=.75\textwidth]{../figures/violintissues_pct_counts_mt.png}
+  \caption{Example of one QC metric: violin plots of percent of mitochondrial genes for each tissue reveals tissue specificity}
+  \label{fig:violintissues_pct_counts_mt}
+\end{figure}
+
 \begin{figure}[htbp]
   \centering
   \includegraphics[width=.75\textwidth]{../figures/scattertissues_total_counts_vs_pct_counts_mt.png}
@@ -220,7 +252,7 @@ Data can be obtained by download of files from the provided GTEx website URL as 
 \end{figure}
 
 \FloatBarrier
-\subsubsection{Scatter plots used to merge sub-tissues or not}
+\subsection{Scatter plots used to merge sub-tissues or not}
 
 \begin{figure}[htbp]
   \centering
@@ -238,7 +270,7 @@ Data can be obtained by download of files from the provided GTEx website URL as 
 
 
 \FloatBarrier
-\subsubsection{Samples excluded by tissue-specific QC metrics}
+\subsection{Samples excluded by tissue-specific QC metrics}
 
 \begin{figure}[htbp]
   \centering
@@ -249,7 +281,7 @@ Data can be obtained by download of files from the provided GTEx website URL as 
 
 
 \FloatBarrier
-\subsubsection{Examples of tissue-specific QC metrics (for all organs go in figures folder)}
+\subsection{Examples of tissue-specific QC metrics (for all organs go in figures folder)}
 
 \begin{figure}[htbp]
   \centering
@@ -280,7 +312,7 @@ Data can be obtained by download of files from the provided GTEx website URL as 
 \end{figure}
 
 \FloatBarrier
-\subsubsection{Examples of contaminating genes}
+\subsection{Examples of contaminating genes}
 \begin{figure}[htbp]
   \centering
   \includegraphics[width=.75\textwidth]{../figures/pcaqsmooth_PCA_contaminating_genes.png}
@@ -288,7 +320,7 @@ Data can be obtained by download of files from the provided GTEx website URL as 
   \label{fig:contaminating_genes}
 \end{figure}
 
-\subsubsection{PCA of smooth qunatile normalized data}
+\subsection{PCA of smooth qunatile normalized data}
 \begin{figure}[htbp]
   \centering
   \includegraphics[width=.75\textwidth]{../figures/pcaqsmooth_PCA_covariates.png}
