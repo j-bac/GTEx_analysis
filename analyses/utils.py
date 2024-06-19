@@ -31,24 +31,26 @@ def get_protein_coding_genes(
 
 
 def load_rnaseq_sample_selected_tissues_anndata(
-    X_path="../results/rnaseq_sample_selected_tissues.parquet",
-    genes_rows_path="../results/rnaseq_sample_selected_tissues_genes_rows.csv",
-    samples_columns_path="../results/rnaseq_sample_selected_tissues_samples_columns.csv",
-    samples_metadata_path="../results/rnaseq_sample_selected_tissues_metadata.csv",
+    X_path="../results/1_rnaseq_sample_selected_tissues_qsmooth.parquet",
+    genes_rows_path="../results/1_rnaseq_sample_selected_tissues_qsmooth_genes.csv",
+    genes_names_path="../results/0_rnaseq_sample_selected_tissues_genes_rows.csv",
+    samples_metadata_path="../results/0_rnaseq_sample_selected_tissues_QC_metadata.csv",
 ):
     X = pd.read_parquet(X_path)
     rows = pd.read_csv(genes_rows_path)
-    cols = pd.read_csv(samples_columns_path, index_col=0)["0"].values
+    cols = X.columns  # pd.read_csv(samples_columns_path, index_col=0)["0"].values
     cols_metadata = pd.read_csv(samples_metadata_path, index_col=0)
 
+    genes_names = pd.read_csv(genes_names_path)
     assert all(cols == cols_metadata.index)
 
     adata = sc.AnnData(X)
     adata.var_names = cols
     adata.var = cols_metadata
     adata.obs_names = rows["Name"].values
-    if "Description" in rows.columns:
-        adata.obs["Description"] = rows["Description"].values
+    adata.obs["Description"] = genes_names.set_index("Name").loc[
+        adata.obs_names, "Description"
+    ]
     adata = adata.T.copy()
     return adata
 

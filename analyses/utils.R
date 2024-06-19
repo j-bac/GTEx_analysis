@@ -1,22 +1,19 @@
 library(Matrix)
 library(data.table)
+library(arrow)
 
 load_rnaseq_sample_selected_tissues <- function(
-  X_path = "results/rnaseq_sample_selected_tissues.mm",
-  genes_rows_path = "results/rnaseq_sample_selected_tissues_genes_rows.csv",
-  samples_columns_path = "results/rnaseq_sample_selected_tissues_samples_columns.csv",
-  samples_metadata_path = "results/rnaseq_sample_selected_tissues_metadata.csv"
+  X_path = "results/0_rnaseq_sample_selected_tissues_QC.parquet",
+  samples_metadata_path = "results/0_rnaseq_sample_selected_tissues_QC_metadata.csv"
 ) {
   # Load the sparse matrix
   X <- read_parquet(X_path)
-  
-  # Load the rows (genes)
-  rows <- fread(genes_rows_path)
-  rownames(X) <- rows[['Name']]  # Assuming the first column contains gene names
 
-  # Load the columns (samples)
-  cols <- fread(samples_columns_path)[['V2']]
-  colnames(X) <- cols[2:length(cols)]
+  # assign rownames
+  rownames <- X$Name
+  X$Name <- NULL
+  X <- as.matrix(X)
+  rownames(X) <- rownames 
 
   # Load the sample metadata
   cols_metadata <- fread(samples_metadata_path)
@@ -25,7 +22,8 @@ load_rnaseq_sample_selected_tissues <- function(
   stopifnot(all(colnames(X) == cols_metadata[[1]]))
 
   # Create a sparse data frame-like object
-  sparse_df <- list(X = X,  metadata = cols_metadata)
+  out <- list(X = X,  metadata = cols_metadata)
   
-  return(sparse_df)
+  return(out)
 }
+
