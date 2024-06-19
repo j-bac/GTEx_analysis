@@ -1,6 +1,5 @@
 # Ignore data files
 data
-*.pdf
 *.png
 *.jpg
 *.svg
@@ -27,6 +26,13 @@ data
 *.sif
 *.mm
 *.parquet
+*.bbl
+*.blg
+*.fls
+*.log
+*.toc
+*.fdb_latexmk
+*.aux
 
 # Ignore files with a pattern of "." followed by numbers
 *.[0-9]*
