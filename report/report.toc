@@ -1,0 +1,19 @@
+\contentsline {section}{\numberline {1}Introduction}{1}{}%
+\contentsline {subsection}{\numberline {1.1}Quality Control and Normalization}{2}{}%
+\contentsline {subsection}{\numberline {1.2}Definition of Tissue “Specificity” and Prior Expectations}{4}{}%
+\contentsline {subsection}{\numberline {1.3}Definition of Biological Pathway and Process}{5}{}%
+\contentsline {subsection}{\numberline {1.4}Definition of Transcriptional Regulators}{5}{}%
+\contentsline {section}{\numberline {2}Results}{5}{}%
+\contentsline {section}{\numberline {3}Discussion}{12}{}%
+\contentsline {section}{\numberline {4}Methods}{12}{}%
+\contentsline {subsection}{\numberline {4.1}Quality control and preprocessing}{12}{}%
+\contentsline {subsection}{\numberline {4.2}Differential expression test}{13}{}%
+\contentsline {subsection}{\numberline {4.3}GSEA and TF activity inference}{13}{}%
+\contentsline {subsection}{\numberline {4.4}Data availability statement}{13}{}%
+\contentsline {section}{\numberline {5}Supplementary figures}{13}{}%
+\contentsline {subsubsection}{\numberline {5.0.1}Global QC metrics}{13}{}%
+\contentsline {subsubsection}{\numberline {5.0.2}Scatter plots used to merge sub-tissues or not}{14}{}%
+\contentsline {subsubsection}{\numberline {5.0.3}Samples excluded by tissue-specific QC metrics}{14}{}%
+\contentsline {subsubsection}{\numberline {5.0.4}Examples of tissue-specific QC metrics (for all organs go in figures folder)}{15}{}%
+\contentsline {subsubsection}{\numberline {5.0.5}Examples of contaminating genes}{20}{}%
+\contentsline {subsubsection}{\numberline {5.0.6}PCA of smooth qunatile normalized data}{20}{}%

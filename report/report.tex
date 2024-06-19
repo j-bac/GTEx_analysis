@@ -1,0 +1,305 @@
+\documentclass{article}
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage{natbib}
+\usepackage{placeins}
+
+\begin{document}
+\title{GTEx analysis}
+\maketitle
+\tableofcontents
+
+\section{Introduction}
+
+The Adult Genotype Tissue Expression (GTEx) Project offers a large public resource of human RNA-seq data across tissues and individuals. This data offers an opportunity to identify tissue-shared and tissue-specific expression of genes, biological pathways/processes, and their transcriptional regulators.
+
+We present a simple, baseline analysis to identify liver-specific pathways and transcription factors. Further analyses that should have been explored to make the analysis robust and exhaustive are presented in the discussion section.
+
+The analysis is performed on a subset of tissues and protein-coding genes. We note that performing separate analysis for protein-coding genes can be motivated biologically and not solely by concerns of memory issues. For example, lncRNA have a different expression distribution than protein-coding genes and are sometimes treated as a separate modality (\cite{Malagoli2024-gq}).
+
+Performing analysis of highly heterogeneous GTEx data requires careful consideration. We start by a short literature review on possible concerns and analysis strategies for such data. We also quantitatively define terms such as “heterogeneous” and “specificity”.
+
+\subsection{Quality Control and Normalization}
+
+The first step of our analysis is to perform quality control (QC) of the input data and normalization to eliminate technical variation. This includes:
+
+\begin{enumerate}
+  \item Identifying mislabelled samples
+  \item Identifying contamination (e.g., in GTEx data, pancreas genes \textit{PRSS1}, \textit{CELA3A}, \textit{PNLIP}, \textit{CLPS} and esophagus genes \textit{KRT4}, \textit{KRT13} are expressed in other tissues (\cite{Nieuwenhuis2020-jp}))
+  \item Filtering out samples of poor quality
+  \begin{itemize}
+    \item In a tissue-aware manner
+    \item In a tissue-agnostic manner
+  \end{itemize}
+  \item Filtering out lowly expressed genes
+  \begin{itemize}
+    \item In a tissue-aware manner
+    \item In a tissue-agnostic manner
+  \end{itemize}
+  \item Defining relevant groups of interest. In our case, this means choosing to group sub-tissues or keep them separate
+  \item Normalization
+  \begin{itemize}
+    \item In a tissue-aware manner
+    \item In a tissue-agnostic manner
+  \end{itemize}
+\end{enumerate}
+
+In our case, we won't address steps 1 and 2 in detail for the sake of time. We instead will rely on the way they have been addressed in prior literature analyzing GTEx data. For step 1, GTEX-11LO (not present in our samples of interest), underwent sex reassignment surgery and thus was assigned the wrong sex label (\cite{Paulson2017-jv}). For step 2, a low-level contamination of some genes should not significantly affect our analysis, under the hypothesis that it is at the same magnitude across tissues.
+
+For step 3, we first rely on the GTEx-provided RNA Integrity Number to flag samples of poor quality. We also compute four quality metrics for each sample:
+\begin{itemize}
+  \item Number of expressed genes
+  \item Number of counts
+  \item Percent of counts from mitochondrial genes
+  \item Percent of counts coming from the 20 most expressed genes
+\end{itemize}
+
+Importantly, we can compute such metrics tissue by tissue rather than across tissues. This is important since distributions can vary between tissues, e.g., we find that heart samples have a much higher percent of counts from mitochondrial genes.
+
+For step 4, we rely on the simple tissue-specific filtering procedure as defined and recommended by (\cite{Paulson2017-jv}). “Tissue-agnostic” filtering removes genes with less than one count per million (CPM) in half of all samples. “Tissue-aware” filtering removes genes with less than one CPM in fewer than half of the number of samples of the smallest tissue.
+
+For step 5, we rely once again on a simple grouping procedure by (\cite{Paulson2017-jv}):
+\begin{enumerate}
+  \item Group samples by tissue
+  \item Exclude the X, Y, and mitochondrial genes
+  \item Identify the 1000 most variable genes
+  \item Log2-transform raw counts
+  \item Check whether sub-tissues cluster separately on PCA or PCoA plots. If they don't form separate clusters, merge sub-tissues into a single tissue label
+\end{enumerate}
+
+For step 6, the normalization strategy will depend on the downstream gene set identification approach.
+\begin{itemize}
+  \item Using a “within sample” approach, clusters of genes and pathway activity are first defined separately for each sample, e.g., using single sample GSEA (ssGSEA) or WGCNA. For such within-sample analysis, TPM values are suitable. WGCNA was for example used in the GTEx pilot study (\cite{GTEx-Consortium2015-te}).
+  \item Using a “between samples” approach, where samples' expression values are directly compared against one another using specificity metrics or differential expression. TPM values can't be used for such comparisons. Moreover, assumptions of usual normalization approaches might not hold (\cite{Paulson2017-jv}). For example, that:
+  \begin{itemize}
+    \item Most genes are not differentially expressed
+    \item Global differences in expression distribution are induced only by technical variation
+    \item The number and magnitude of up- and down-regulated genes are comparable
+  \end{itemize}
+\end{itemize}
+
+Rather than simple quantile normalization, smooth quantile normalization methods (e.g., qsmooth, SNAIL (\cite{Hicks2018-gi,Hsieh2023-jf})) have been developed to better compare different tissues from GTEx. They assume that the statistical distribution of each sample should be similar within a biological group, instead of globally across biological groups. The authors show this allows for better preservation of biologically known tissue-specific expression.
+
+In our analysis, we choose to rely on smooth quantile normalization to enable direct comparisons across tissues.
+
+\subsection{Definition of Tissue “Specificity” and Prior Expectations}
+
+After quality control and normalization, the next question is to quantitatively define tissue “specificity”:
+\begin{itemize}
+  \item "Specificity" could be interpreted as:
+  \item Strict presence or absence compared to other tissues (similar conceptually to the task of identifying "marker genes" (\cite{Pullin2024-xv})). Clearly, this second definition is not realistic to apply given expectations from prior literature (\cite{Aguet2016-qm}):
+  \begin{quote}
+    “Since most protein-coding genes appear to be expressed ubiquitously, tissue specificity is driven by the concerted, differential expression of multiple genes, or networks of genes, as part of specific cellular programs, and not the tissue-specific expression of a few select genes. [...] In general, gene expression varies far more across tissues than across individuals”
+  \end{quote}
+  \item A differential increase or decrease in activity compared to other tissues (testing with a one vs rest approach or pairwise), as measured by a statistical test or linear model (e.g., Wilcoxon, edgeR, limma, …)
+  \item A tissue specificity metric, such as those benchmarked in (\cite{Kryuchkova-Mostacci2017-vy}). The authors divide methods into two categories: metrics that output a single number whether a gene is tissue-specific or ubiquitous (Tau, Gini, TSI, Counts and Hg), and metrics that report for each tissue how specific the gene is to that tissue (z-score, SPM, EE and PEM). While we could use one metric of this second category, in our case, we are not looking for a full vector of tissue specificity but a single value for gene specificity to the liver. Moreover, these metrics do not report genes' statistical significance out of the box. Hence, we will opt for a simple approach based on differential expression.
+\end{itemize}
+
+\subsection{Definition of Biological Pathway and Process}
+
+Next, we need to define the meaning of “pathway” or “biological process” given our goal to compare different tissues. Here we will not explore in detail which resource is most relevant but use one out of the box: the HALLMARK collection from the Molecular Signatures Database (MSigDB) (\cite{Liberzon2011-ex}).
+
+\subsection{Definition of Transcriptional Regulators}
+
+Finally, we define transcriptional regulators based on CollecTRI (\cite{Muller-Dott2023-ve}), a meta-resource containing signed TF-gene interactions for 1186 TFs extracted from multiple databases.
+
+
+\section{Results}
+
+Starting with raw counts from the GTEx website, we retained protein-coding genes and heart, kidney, liver, lung, muscle, pancreas, spleen, stomach, pituitary gland, and thyroid samples.
+
+Subtissues were grouped for kidney and considered separately for heart based on scatterplot visualization as described in (\cite{Paulson2017-jv}) (see figures below). Kidney Medulla sub-tissue was excluded by RNA integrity number quality control anyway, thus the decision to merge ended up having no impact.
+
+Samples that passed both RNA integrity quality control and tissue-specific quality control were smooth quantile normalized (see Supplementary figures).
+
+Differentially expressed genes were defined based on a Wilcoxon and the default scanpy procedure, which uses a one vs rest approach (i.e., test liver vs all other tissues rather than pairwise testing of tissue). 
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=.75\textwidth]{../figures/volcano_liver_DE_genes.png}
+  \caption{Volcano plot of DE genes found by Wilcoxon test of liver vs all other tissues considered}
+  \label{fig:volcano_liver_DE_genes}
+\end{figure}
+\FloatBarrier
+
+Wilcoxon test scores were given as input to decoupleR's univariate linear model (\cite{Badia-I-Mompel2022-wj}) to predict transcription factor activities and p-values based on prior knowledge of the transcription factor (TF) to target network from collecTRI (\cite{Muller-Dott2023-ve}).
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=.75\textwidth]{../figures/1_TF_activities_top20_bar.png}
+  \caption{Top 20 significant TF activities found using decoupleR's univariate linear model and collecTRI TF-target database, fitted on Wilcoxon scores of liver vs all other tissues}
+  \label{fig:1_TF_activities_top20_bar}
+\end{figure}
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=.75\textwidth]{../figures/1_TF_activities_network.png}
+  \caption{Network of top significant TFs and a few of their target genes. Colored by activities found using decoupleR's univariate linear model and collecTRI TF-target database, fitted on Wilcoxon scores of liver vs all other tissues}
+  \label{fig:1_TF_activities_top20_bar}
+\end{figure}
+\FloatBarrier
+
+Wilcoxon test scores were also given as input for gene set enrichment analysis (GSEA) of terms in the MSigDB HALLMARK collection. Finally, to obtain TFs specific to a pathway, we simply use previously computed significant TF activities, subsetting to significant TFs connected to leading genes reported by GSEA for that pathway. For Xenobiotic metabolism (top GSEA pathway), this yielded largely unchanged results compared to previously identified non-pathway-specific significant TFs. 
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=.75\textwidth]{../figures/1_msigdb_HALLMARK_top20.png}
+  \caption{Top 20 pathways' normalized enrichment scores found using decoupleR's GSEA and MSigDB HALLMARK gene sets, with Wilcoxon scores of liver vs all other tissues as input}
+  \label{fig:1_msigdb_HALLMARK_top20}
+\end{figure}
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=.75\textwidth]{../figures/1_top_pathway_TF_activities_top20_bar.png}
+  \caption{Xenobiotic metabolism (top GSEA pathway) top 20 TF activities found using decoupleR's univariate linear model and collecTRI TF-target database, fitted on Wilcoxon scores of liver vs all other tissues}
+  \label{fig:1_top_pathway_TF_activities_top20_bar}
+\end{figure}
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=.75\textwidth]{../figures/1_top_pathway_TF_activities_network.png}
+  \caption{Xenobiotic metabolism (top GSEA pathway) network of top TF and a few of their target genes. Colored by activities found using decoupleR's univariate linear model and collecTRI TF-target database, fitted on Wilcoxon scores of liver vs all other tissues}
+  \label{fig:1_top_pathway_TF_activities_network}
+\end{figure}
+\FloatBarrier
+
+
+\section{Discussion}
+Our analysis presented a simple pipeline to identify liver-specific pathways and associated regulators. Although simple, top hits identified by this pipeline are TFs and pathways that make biological sense given functions of the liver.
+
+Our analysis could have been further improved by:
+\begin{itemize}
+  \item Being more comprehensive in testing combinations of normalization methods and metrics to define specificity or pathways. For example, we could also use an ensemble of DE methods with possible use of covariates, e.g. for patient or sex
+  \item Testing single sample approaches mentioned in the introduction rather than directly comparing normalized samples. 
+  \item Testing for changes in gene co-expression rather than gene expression. This has been performed and reported to yield better tissue specificity in prior literature (\cite{Sonawane2017-gs}).
+\end{itemize}
+
+\section{Methods}
+
+\subsection{Quality control and preprocessing}
+Data were processed using scanpy (\cite{Wolf2018-tw}) and yarn (\cite{Paulson2017-jv}). All functions were used with default parameters. Package versions necessary for reproducibility are provided on github in the .yml file.
+
+We removed, in accordance with GTEx guidelines, samples with RNA Integrity Number below and samples with median absolute deviation 6 times above or below the median (only above for the mitochondrial filter) for any of the four quality metrics, computed separately for each tissue: 
+\begin{itemize}
+  \item number of expressed genes
+  \item number of counts
+  \item percent of counts from mitochondrial genes
+  \item percent of counts coming from the 20 most expressed genes. 
+\end{itemize}
+
+We performed “tissue-aware” filtering using yarn (\cite{Paulson2017-jv}), removing genes with less than one CPM in fewer than half of the number of samples of the smallest tissue. 
+
+We merged or not sub-tissues based on the procedure by (\cite{Paulson2017-jv}): 
+\begin{enumerate}
+  \item group samples by tissue. 
+  \item exclude the X, Y, and mitochondrial genes
+  \item identify the 1000 most variable genes
+  \item log2-transform raw counts
+  \item check whether sub-tissues cluster separately on PCA or PCoA plots. If they don't form separate cluster, merge sub-tissues into a single tissue label
+\end{enumerate}
+
+\subsection{Differential expression test}
+We applied scanpy's Wilcoxon test to log1p transformed, smooth quantile normalized data to find DE genes for liver samples against samples from all other tissues grouped together. 
+
+\subsection{GSEA and TF activity inference}
+We used decoupleR's implementation of GSEA and the univariate linear model for TF activity inference. All parameters were used in their default settings. Significant TFs were defined as those having p-value below 0.05.
+
+
+\subsection{Data availability statement}
+Data can be obtained by download of files from the provided GTEx website URL as well as GENCODE v26 for protein coding genes metadata. We also provide the data folder at [drive url] for reproducibility.
+
+\section{Supplementary figures}
+
+\FloatBarrier
+\subsubsection{Global QC metrics}
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=.75\textwidth]{../figures/scattertissues_total_counts_vs_pct_counts_mt.png}
+  \caption{Heart Atrial Appendage QC}
+  \label{fig:scattertissues_total_counts_vs_pct_counts_mt}
+\end{figure}
+
+\FloatBarrier
+\subsubsection{Scatter plots used to merge sub-tissues or not}
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=.75\textwidth]{../figures/mds_Kidney_subtissues.png}
+  \caption{Kidney sub-tissue QC: they are not distinct so merging was chosen}
+  \label{fig:kidney_merging}
+\end{figure}
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=.75\textwidth]{../figures/mds_Heart_subtissues.png}
+  \caption{Heart sub-tissue QC: they are distinct so merging was not chosen}
+  \label{fig:heart_merging}
+\end{figure}
+
+
+\FloatBarrier
+\subsubsection{Samples excluded by tissue-specific QC metrics}
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=.75\textwidth]{../figures/0_tissues_outliers.png}
+  \caption{Samples excluded by tissue-specific QC metrics}
+  \label{fig:0_tissues_outliers}
+\end{figure}
+
+
+\FloatBarrier
+\subsubsection{Examples of tissue-specific QC metrics (for all organs go in figures folder)}
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=.75\textwidth]{../figures/0_Heart_Atrial_Appendage_QC.png}
+  \caption{Heart Atrial Appendage QC}
+  \label{fig:0_Heart_Atrial_Appendage_QC}
+\end{figure}
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=.75\textwidth]{../figures/0_Heart_Left_Ventricle_QC.png}
+  \caption{Heart Left Ventricle QC}
+  \label{fig:0_Heart_Left_Ventricle_QC}
+\end{figure}
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=.75\textwidth]{../figures/0_Kidney_QC.png}
+  \caption{Kidney QC}
+  \label{fig:0_Kidney_QC}
+\end{figure}
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=.75\textwidth]{../figures/0_Liver_QC.png}
+  \caption{Liver QC}
+  \label{fig:0_Liver_QC}
+\end{figure}
+
+\FloatBarrier
+\subsubsection{Examples of contaminating genes}
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=.75\textwidth]{../figures/pcaqsmooth_PCA_contaminating_genes.png}
+  \caption{Examples of contaminating genes}
+  \label{fig:contaminating_genes}
+\end{figure}
+
+\subsubsection{PCA of smooth qunatile normalized data}
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=.75\textwidth]{../figures/pcaqsmooth_PCA_covariates.png}
+  \caption{PCA of smooth quantile normalized data, colored by covariates}
+  \label{fig:pca_covariates}
+\end{figure}
+
+
+
+\bibliographystyle{plainnat}
+\bibliography{references}
+
+
+\end{document}

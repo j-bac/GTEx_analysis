@@ -1,0 +1,116 @@
+\begin{thebibliography}{14}
+\providecommand{\natexlab}[1]{#1}
+\providecommand{\url}[1]{\texttt{#1}}
+\expandafter\ifx\csname urlstyle\endcsname\relax
+  \providecommand{\doi}[1]{doi: #1}\else
+  \providecommand{\doi}{doi: \begingroup \urlstyle{rm}\Url}\fi
+
+\bibitem[Aguet and Ardlie(2016)]{Aguet2016-qm}
+Fran{\c c}ois Aguet and Kristin~G Ardlie.
+\newblock Tissue specificity of gene expression.
+\newblock \emph{Curr. Genet. Med. Rep.}, 4\penalty0 (4):\penalty0 163--169,
+  December 2016.
+
+\bibitem[Badia-I-Mompel et~al.(2022)Badia-I-Mompel, V{\'e}lez~Santiago,
+  Braunger, Geiss, Dimitrov, M{\"u}ller-Dott, Taus, Dugourd, Holland,
+  Ramirez~Flores, and Saez-Rodriguez]{Badia-I-Mompel2022-wj}
+Pau Badia-I-Mompel, Jes{\'u}s V{\'e}lez~Santiago, Jana Braunger, Celina Geiss,
+  Daniel Dimitrov, Sophia M{\"u}ller-Dott, Petr Taus, Aurelien Dugourd,
+  Christian~H Holland, Ricardo~O Ramirez~Flores, and Julio Saez-Rodriguez.
+\newblock decoupler: ensemble of computational methods to infer biological
+  activities from omics data.
+\newblock \emph{Bioinform Adv}, 2\penalty0 (1):\penalty0 vbac016, March 2022.
+
+\bibitem[{GTEx Consortium}(2015)]{GTEx-Consortium2015-te}
+{GTEx Consortium}.
+\newblock Human genomics. the {Genotype-Tissue} expression ({GTEx}) pilot
+  analysis: multitissue gene regulation in humans.
+\newblock \emph{Science}, 348\penalty0 (6235):\penalty0 648--660, May 2015.
+
+\bibitem[Hicks et~al.(2018)Hicks, Okrah, Paulson, Quackenbush, Irizarry, and
+  Bravo]{Hicks2018-gi}
+Stephanie~C Hicks, Kwame Okrah, Joseph~N Paulson, John Quackenbush, Rafael~A
+  Irizarry, and H{\'e}ctor~Corrada Bravo.
+\newblock Smooth quantile normalization.
+\newblock \emph{Biostatistics}, 19\penalty0 (2):\penalty0 185--198, April 2018.
+
+\bibitem[Hsieh et~al.(2023)Hsieh, Lopes-Ramos, Zucknick, Sandve, Glass, and
+  Kuijjer]{Hsieh2023-jf}
+Ping-Han Hsieh, Camila~Miranda Lopes-Ramos, Manuela Zucknick, Geir~Kjetil
+  Sandve, Kimberly Glass, and Marieke~Lydia Kuijjer.
+\newblock Adjustment of spurious correlations in co-expression measurements
+  from {RNA-Sequencing} data.
+\newblock \emph{Bioinformatics}, 39\penalty0 (10), October 2023.
+
+\bibitem[Kryuchkova-Mostacci and
+  Robinson-Rechavi(2017)]{Kryuchkova-Mostacci2017-vy}
+Nadezda Kryuchkova-Mostacci and Marc Robinson-Rechavi.
+\newblock A benchmark of gene expression tissue-specificity metrics.
+\newblock \emph{Brief. Bioinform.}, 18\penalty0 (2):\penalty0 205--214, March
+  2017.
+
+\bibitem[Liberzon et~al.(2011)Liberzon, Subramanian, Pinchback,
+  Thorvaldsd{\'o}ttir, Tamayo, and Mesirov]{Liberzon2011-ex}
+Arthur Liberzon, Aravind Subramanian, Reid Pinchback, Helga
+  Thorvaldsd{\'o}ttir, Pablo Tamayo, and Jill~P Mesirov.
+\newblock Molecular signatures database ({MSigDB}) 3.0.
+\newblock \emph{Bioinformatics}, 27\penalty0 (12):\penalty0 1739--1740, June
+  2011.
+
+\bibitem[Malagoli et~al.(2024)Malagoli, Valle, Barillot, Caselle, and
+  Martignetti]{Malagoli2024-gq}
+Gabriele Malagoli, Filippo Valle, Emmanuel Barillot, Michele Caselle, and
+  Loredana Martignetti.
+\newblock Identification of interpretable clusters and associated signatures in
+  breast cancer single-cell data: A topic modeling approach.
+\newblock \emph{Cancers (Basel)}, 16\penalty0 (7):\penalty0 1350, March 2024.
+
+\bibitem[M{\"u}ller-Dott et~al.(2023)M{\"u}ller-Dott, Tsirvouli, Vazquez,
+  Ramirez~Flores, Badia-I-Mompel, Fallegger, T{\"u}rei, L{\ae}greid, and
+  Saez-Rodriguez]{Muller-Dott2023-ve}
+Sophia M{\"u}ller-Dott, Eirini Tsirvouli, Miguel Vazquez, Ricardo~O
+  Ramirez~Flores, Pau Badia-I-Mompel, Robin Fallegger, D{\'e}nes T{\"u}rei,
+  Astrid L{\ae}greid, and Julio Saez-Rodriguez.
+\newblock Expanding the coverage of regulons from high-confidence prior
+  knowledge for accurate estimation of transcription factor activities.
+\newblock \emph{Nucleic Acids Res.}, 51\penalty0 (20):\penalty0 10934--10949,
+  November 2023.
+
+\bibitem[Nieuwenhuis et~al.(2020)Nieuwenhuis, Yang, Verma, Pillalamarri,
+  Arking, Rosenberg, McCall, and Halushka]{Nieuwenhuis2020-jp}
+Tim~O Nieuwenhuis, Stephanie~Y Yang, Rohan~X Verma, Vamsee Pillalamarri, Dan~E
+  Arking, Avi~Z Rosenberg, Matthew~N McCall, and Marc~K Halushka.
+\newblock Consistent {RNA} sequencing contamination in {GTEx} and other data
+  sets.
+\newblock \emph{Nat. Commun.}, 11\penalty0 (1):\penalty0 1933, April 2020.
+
+\bibitem[Paulson et~al.(2017)Paulson, Chen, Lopes-Ramos, Kuijjer, Platig,
+  Sonawane, Fagny, Glass, and Quackenbush]{Paulson2017-jv}
+Joseph~N Paulson, Cho-Yi Chen, Camila~M Lopes-Ramos, Marieke~L Kuijjer, John
+  Platig, Abhijeet~R Sonawane, Maud Fagny, Kimberly Glass, and John
+  Quackenbush.
+\newblock Tissue-aware {RNA-Seq} processing and normalization for heterogeneous
+  and sparse data.
+\newblock \emph{BMC Bioinformatics}, 18\penalty0 (1):\penalty0 437, October
+  2017.
+
+\bibitem[Pullin and McCarthy(2024)]{Pullin2024-xv}
+Jeffrey~M Pullin and Davis~J McCarthy.
+\newblock A comparison of marker gene selection methods for single-cell {RNA}
+  sequencing data.
+\newblock \emph{Genome Biol.}, 25\penalty0 (1):\penalty0 56, February 2024.
+
+\bibitem[Sonawane et~al.(2017)Sonawane, Platig, Fagny, Chen, Paulson,
+  Lopes-Ramos, DeMeo, Quackenbush, Glass, and Kuijjer]{Sonawane2017-gs}
+Abhijeet~Rajendra Sonawane, John Platig, Maud Fagny, Cho-Yi Chen,
+  Joseph~Nathaniel Paulson, Camila~Miranda Lopes-Ramos, Dawn~Lisa DeMeo, John
+  Quackenbush, Kimberly Glass, and Marieke~Lydia Kuijjer.
+\newblock Understanding {Tissue-Specific} gene regulation.
+\newblock \emph{Cell Rep.}, 21\penalty0 (4):\penalty0 1077--1088, October 2017.
+
+\bibitem[Wolf et~al.(2018)Wolf, Angerer, and Theis]{Wolf2018-tw}
+F~Alexander Wolf, Philipp Angerer, and Fabian~J Theis.
+\newblock {SCANPY}: large-scale single-cell gene expression data analysis.
+\newblock \emph{Genome Biol.}, 19\penalty0 (1):\penalty0 15, February 2018.
+
+\end{thebibliography}
