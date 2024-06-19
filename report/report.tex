@@ -69,8 +69,8 @@ For step 5, we rely once again on a simple grouping procedure by (\cite{Paulson2
 
 For step 6, the normalization strategy will depend on the downstream gene set identification approach.
 \begin{itemize}
-  \item Using a “within sample” approach, clusters of genes and pathway activity are first defined separately for each sample, e.g., using WGCNA. For such within-sample analysis, TPM values are suitable. WGCNA was for example the approach used in the GTEx pilot study to construct coexpression networks and extract gene modules for each tissue. The  modules are then used to identify active pathways across tissues (\cite{GTEx-Consortium2015-te}).
-  \item Using a “between samples” approach, where samples' expression values are directly compared against one another using specificity metrics or differential expression. TPM values can't be used for such comparisons. Moreover, assumptions of usual normalization approaches might not hold (\cite{Paulson2017-jv}). For example, that:
+  \item Using a “within sample” approach, clusters of genes and pathway activity are first defined separately for each sample, e.g., using ssGSEA. For such within-sample analysis, TPM values are suitable.
+  \item Using a “between samples” approach, where samples' expression values are directly compared against one another using specificity metrics or differential expression. When comparing different tissues, however, assumptions of usual normalization approaches might not hold (\cite{Paulson2017-jv}). For example, that:
   \begin{itemize}
     \item Most genes are not differentially expressed
     \item Global differences in expression distribution are induced only by technical variation
@@ -78,7 +78,10 @@ For step 6, the normalization strategy will depend on the downstream gene set id
   \end{itemize}
 \end{itemize}
 
-Rather than simple quantile normalization, smooth quantile normalization methods (e.g., qsmooth, SNAIL (\cite{Hicks2018-gi,Hsieh2023-jf})) have been developed to better compare different tissues from GTEx. They assume that the statistical distribution of each sample should be similar within a biological group, instead of globally across biological groups. The authors show this allows for better preservation of biologically known tissue-specific expression.
+In the GTEx pilot study, difficulties of directly comparing different tissues were circumvented by using WGCNA separately on each tissue to construct coexpression networks and extract gene modules. The modules are then used to identify active pathways across tissues (\cite{GTEx-Consortium2015-te}).
+
+
+Another possibility, which we choose to explore here, is to use smooth quantile normalization methods (e.g., qsmooth, SNAIL (\cite{Hicks2018-gi,Hsieh2023-jf})) that have been developed to better compare different tissues from GTEx. They assume that the statistical distribution of each sample should be similar within a biological group, instead of globally across biological groups like usual quantile normalization. The authors show this allows for better preservation of biologically known tissue-specific expression.
 
 
 In our analysis, we choose to rely on smooth quantile normalization to enable direct comparisons across tissues and will not compare results with a within sample approache due to time constraints.
@@ -170,9 +173,9 @@ Our analysis presented a simple pipeline to identify liver-specific pathways and
 
 Our analysis could have been further improved by:
 \begin{itemize}
-  \item Being more comprehensive in testing combinations of normalization methods and metrics to define specificity or pathways. For example, we could also use an ensemble of DE methods with possible use of covariates, e.g. for patient or sex
-  \item Testing single sample approaches mentioned in the introduction rather than directly comparing normalized samples. 
-  \item Testing for changes in gene co-expression rather than gene expression. This has been performed and reported to yield better tissue specificity in prior literature (\cite{Sonawane2017-gs}).
+  \item Being more comprehensive in testing normalization methods and metrics to define specificity or pathways. For example, we could use an ensemble of DE methods with possible use of covariates, e.g. for patient or sex
+  \item Testing single sample approaches such as ssGSEA mentioned in the introduction rather than directly comparing normalized samples. 
+  \item Testing for changes in gene co-expression rather than gene expression (e.g., WGCNA). This has been performed and reported to yield better tissue specificity in prior literature (\cite{Sonawane2017-gs}).
 \end{itemize}
 
 \section{Methods}
