@@ -3,10 +3,11 @@ library(yarn)
 library(quantro)
 library(qsmooth)
 library(dplyr)
-source("analyses/preprocessing.R")
+library(arrow)
+source("analyses/utils.R")
 
 rnaseq_sample_selected_tissues <- load_rnaseq_sample_selected_tissues(
-  X_path = "results/rnaseq_sample_selected_tissues.mm",
+  X_path = "results/rnaseq_sample_selected_tissues.parquet",
   genes_rows_path = "results/rnaseq_sample_selected_tissues_genes_rows.csv",
   samples_columns_path = "results/rnaseq_sample_selected_tissues_samples_columns.csv",
   samples_metadata_path = "results/rnaseq_sample_selected_tissues_metadata.csv"
@@ -19,21 +20,47 @@ expr_set <- Biobase::ExpressionSet(
     as.matrix(rnaseq_sample_selected_tissues$X),
     phenoData=Biobase::AnnotatedDataFrame(metadata)
 )
+rm(rnaseq_sample_selected_tissues)
 
-# process with yarn qsmooth
+# filer genes, process with qsmooth and quantile normalization
 # yarn::checkMisAnnotation(expr_set,"GENDER",controlGenes="Y",legendPosition="topleft")
 # yarn::checkTissuesToMerge(expr_set,"SMTS","SMTSD")
 expr_set_filtered <- yarn::filterLowGenes(expr_set,"SMTSD_grouped")
 expr_set_filtered_qsmooth <- yarn::normalizeTissueAware(expr_set_filtered,"SMTSD_grouped", normalizationMethod='qsmooth')
-qs <- qsmooth(expr_set_filtered,"SMTSD_grouped")
+expr_set_filtered_quantile <- yarn::normalizeTissueAware(expr_set_filtered,"SMTSD_grouped", normalizationMethod='quantile')
+
+# get qsmooth weights
+qs <- qsmooth(expr_set_filtered@assayData$exprs,"SMTSD_grouped")
 expr_set_filtered_qsmooth_data <- qsmoothData(qs) # extract smoothed quantile normalized data
 expr_set_filtered_qsmooth_weights qsmoothWeights(qs) # extract smoothed quantile normalized weights
-expr_set_filtered_quantile <- yarn::normalizeTissueAware(expr_set_filtered,"SMTSD_grouped", normalizationMethod='quantile')
-# qs_norm_e1 <- qsmooth(object = expr_set_filtered@assayData$exprs, group_factor = expr_set$SMTSD)
+
+# check assumptions with quantro
+qtest <- quantro(object = expr_set_filtered, groupFactor = expr_set_filtered$SMTSD_grouped)
+qtestPerm <- quantro(object = expr_set_filtered, groupFactor = expr_set_filtered$SMTSD_grouped, B = 100)
+quantroPlot(qtestPerm)
+
+summary(qtest)
+anova(qtest)
+quantroStat(qtest)
+
+summary(qtestPerm)
+anova(qtestPerm)
+quantroStat(qtestPerm)
 
 
 # save to MM (just to keep single format - matrix is now quite dense)
-rnaseq_sample_selected_tissues_qsmooth_sparse <- as( expr_set_filtered_qsmooth@assayData$normalizedMatrix, "sparseMatrix")
-writeMM(rnaseq_sample_selected_tissues_yarn_normalized_sparse, "results/rnaseq_sample_selected_tissues_qsmooth.mm")
-write.csv(data.frame(Name = rownames(expr_set_filtered)), "results/rnaseq_sample_selected_tissues_qsmooth_genes_rows.csv", quote=FALSE)
-write.csv(data.frame('0' =  colnames(expr_set_filtered)), "results/rnaseq_sample_selected_tissues_qsmooth_samples_columns.csv", quote=FALSE)
+# rnaseq_sample_selected_tissues_qsmooth_sparse <- as( expr_set_filtered_qsmooth@assayData$normalizedMatrix, "sparseMatrix")
+# writeMM(rnaseq_sample_selected_tissues_yarn_normalized_sparse, "results/rnaseq_sample_selected_tissues_qsmooth.mm")
+# write.csv(data.frame(Name = rownames(expr_set_filtered)), "results/rnaseq_sample_selected_tissues_qsmooth_genes_rows.csv", quote=FALSE)
+# write.csv(data.frame('0' =  colnames(expr_set_filtered)), "results/rnaseq_sample_selected_tissues_qsmooth_samples_columns.csv", quote=FALSE)
+
+# Write data
+write_parquet(as.data.frame(expr_set_filtered_qsmooth@assayData$normalizedMatrix), "results/rnaseq_sample_selected_tissues_qsmooth.parquet")
+write_parquet(as.data.frame(expr_set_filtered_quantile@assayData$normalizedMatrix), "results/rnaseq_sample_selected_tissues_quantile.parquet")
+
+write_parquet(as.data.frame(expr_set_filtered_qsmooth_data), "results/rnaseq_sample_selected_tissues_qsmooth_data.parquet")
+write_parquet(as.data.frame(expr_set_filtered_qsmooth_weights), "results/rnaseq_sample_selected_tissues_qsmooth_weights.parquet")
+
+# Write gene and sample names
+write_parquet(data.frame(Name = rownames(expr_set_filtered)), "results/rnaseq_sample_selected_tissues_qsmooth_genes.parquet")
+write_parquet(data.frame(Name = colnames(expr_set_filtered)), "results/rnaseq_sample_selected_tissues_qsmooth_samples.parquet")

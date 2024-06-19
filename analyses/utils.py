@@ -2,6 +2,7 @@ import pandas as pd
 import pathlib
 import scipy
 import scanpy as sc
+import numpy as np
 
 
 def get_protein_coding_genes(
@@ -30,12 +31,12 @@ def get_protein_coding_genes(
 
 
 def load_rnaseq_sample_selected_tissues_anndata(
-    X_path="../results/rnaseq_sample_selected_tissues.mm",
+    X_path="../results/rnaseq_sample_selected_tissues.parquet",
     genes_rows_path="../results/rnaseq_sample_selected_tissues_genes_rows.csv",
     samples_columns_path="../results/rnaseq_sample_selected_tissues_samples_columns.csv",
     samples_metadata_path="../results/rnaseq_sample_selected_tissues_metadata.csv",
 ):
-    X = scipy.io.mmread(X_path)
+    X = pd.read_parquet(X_path)
     rows = pd.read_csv(genes_rows_path)
     cols = pd.read_csv(samples_columns_path, index_col=0)["0"].values
     cols_metadata = pd.read_csv(samples_metadata_path, index_col=0)
@@ -49,5 +50,14 @@ def load_rnaseq_sample_selected_tissues_anndata(
     if "Description" in rows.columns:
         adata.obs["Description"] = rows["Description"].values
     adata = adata.T.copy()
-    adata.X = adata.X.tocsr()
     return adata
+
+
+def is_outlier(adata, metric: str, nmads: int, positive_only=False):
+    M = adata.obs[metric]
+    threshold = nmads * scipy.stats.median_abs_deviation(M)
+    if positive_only:
+        outlier = np.median(M) + threshold < M
+    else:
+        outlier = (M < np.median(M) - threshold) | (np.median(M) + threshold < M)
+    return outlier, (np.median(M), threshold)

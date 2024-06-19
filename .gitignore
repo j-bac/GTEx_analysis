@@ -26,6 +26,7 @@ data
 *.dill
 *.sif
 *.mm
+*.parquet
 
 # Ignore files with a pattern of "." followed by numbers
 *.[0-9]*
